@@ -36,7 +36,20 @@ define('TGR_PATH', 'http://www.wuxiaworld.com/tgr-index/tgr-chapter-');
 define('TGR', 'tgr_curr_chapter.txt');
 define('TGR_CURR_CHAP', '201');
 
+//CSG
+define('CSG_PATH', 'http://gravitytales.com/chaotic-sword-god/csg-chapter-');
+define('CSG', 'csg_curr_chapter.txt');
+define('CSG_CURR_CHAP', '485');
 
+//TMW
+define('TMW_PATH', 'http://gravitytales.com/true-martial-world/tmw-chapter-0');
+define('TMW', 'tmw_curr_chapter.txt');
+define('TMW_CURR_CHAP', '470');
+
+//IRAS
+define('IRAS_PATH', 'http://gravitytales.com/im-really-a-superstar/iras-chapter-00');
+define('IRAS', 'iras_curr_chapter.txt');
+define('IRAS_CURR_CHAP', '87');
 
 
 
@@ -67,9 +80,9 @@ $saved_path = ISSTH_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\nISSTH Page Doesnt Exits";
+        echo "\n\nISSTH Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -136,9 +149,9 @@ $saved_path = DE_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\n DE Page Doesnt Exits";
+        echo "\n\n DE Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -204,9 +217,9 @@ $saved_path = WDQK_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\n WDQK Page Doesnt Exits";
+        echo "\n\n WDQK Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -272,9 +285,9 @@ $saved_path = SOTR_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\n SOTR Page Doesnt Exits";
+        echo "\n\n SOTR Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -340,9 +353,9 @@ $saved_path = MGA_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\n MGA Page Doesnt Exits";
+        echo "\n\n MGA Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -408,9 +421,9 @@ $saved_path = ATG_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
-        echo "\n\n ATG Page Doesnt Exits";
+        echo "\n\n ATG Page Doesnt Exists";
         fclose($file);
         return;
 }
@@ -476,10 +489,79 @@ $saved_path = TGR_PATH . $curr_chapter . '/';
 // Get HTML
 $html = @file_get_html($saved_path);
 
-// Check if Page exits
+// Check if Page Exists
 if ($html == NULL) {
         fwrite($file, $curr_chapter);
-        echo "\n\n TGR Page Doesnt Exits";
+        echo "\n\n TGR Page Doesnt Exists\n";
+        fclose($file);
+}
+else {
+        //Count to not open browser if next chapter Not out
+        $count = 0;
+
+        // Loops and Get the chapter number for the latest chapter
+        $curr_path = $saved_path;
+        while ($curr_path != NULL) {
+                $html_check = @file_get_html($curr_path);
+                if ($html_check == NULL) {         
+                        if ($count == 1) {
+                                fwrite($file, $curr_chapter);
+                                break;
+                        }
+                        else {
+                                exec('start ' . $saved_path);
+                                fwrite($file, $curr_chapter);
+                                break;
+                        }
+                }
+                foreach ($html_check->find('a') as $a_tag) {
+                        if ($a_tag->plaintext == 'Next Chapter') {
+                                $curr_path = $a_tag->href;
+                                $curr_chapter += 1;
+                                $count += 1;
+                                echo $curr_path . PHP_EOL;
+                                break;
+                        }
+                }
+        }
+        // Close file
+        fclose($file);
+}
+
+
+/**   END OF TGR CODE
+ *
+ */
+
+/**
+ * CSG Code Begins
+ */
+
+// open file and see if it exists, if it doesnt create it. If it does then
+// read current chapter from it or set it to XXXX
+$file = @fopen(CSG, 'r');
+if ($file == NULL)
+        $file = fopen(CSG, 'w+');
+
+if (filesize('./' . CSG)) {
+        $curr_chapter = fgets($file);
+}
+else {
+        $curr_chapter = CSG_CURR_CHAP;
+}
+// Close the file and open it so we can write to it
+fclose($file);
+$file = fopen(CSG, 'w');
+
+//Store path to open browser with
+$saved_path = CSG_PATH . $curr_chapter . '/';
+
+// Get HTML
+$html = file_get_html($saved_path);
+
+// Check if Page Exists
+if ($html == NULL) {
+        echo "\n CSG Page Doesnt Exists\n";
         fclose($file);
         return;
 }
@@ -493,17 +575,17 @@ while ($curr_path != NULL) {
         $html_check = @file_get_html($curr_path);
         if ($html_check == NULL) {         
                 if ($count == 1) {
-                        fwrite($file, $curr_chapter);
+                        fwrite($file, $curr_chapter - 1);
                         break;
                 }
                 else {
                         exec('start ' . $saved_path);
-                        fwrite($file, $curr_chapter);
+                        fwrite($file, $curr_chapter - 1);
                         break;
                 }
         }
         foreach ($html_check->find('a') as $a_tag) {
-                if ($a_tag->plaintext == 'Next Chapter') {
+                if ($a_tag->plaintext == '[Next Chapter]') {
                         $curr_path = $a_tag->href;
                         $curr_chapter += 1;
                         $count += 1;
@@ -515,7 +597,160 @@ while ($curr_path != NULL) {
 
 // Close file
 fclose($file);
-/**   END OF TGR CODE
+/**   END OF CSG CODE
  *
  */
 
+/**
+ * TMW Code Begins
+ */
+
+// open file and see if it exists, if it doesnt create it. If it does then
+// read current chapter from it or set it to XXXX
+$file = @fopen(TMW, 'r');
+if ($file == NULL)
+        $file = fopen(TMW, 'w+');
+
+if (filesize('./' . TMW)) {
+        $curr_chapter = fgets($file);
+}
+else {
+        $curr_chapter = TMW_CURR_CHAP;
+}
+// Close the file and open it so we can write to it
+fclose($file);
+$file = fopen(TMW, 'w');
+
+//Store path to open browser with
+$saved_path = TMW_PATH . $curr_chapter . '/';
+
+// Get HTML
+$html = @file_get_html($saved_path);
+
+// Check if Page Exists
+if ($html == NULL) {
+        echo "\n\n TMW Page Doesnt Exists";
+        fclose($file);
+        return;
+}
+
+//Count to not open browser if next chapter Not out
+$check = 0;
+$count = 0;
+
+// Loops and Get the chapter number for the latest chapter
+$curr_path = $saved_path;
+while ($curr_path != NULL) {
+        $html_check = @file_get_html($curr_path);
+        if ($check == 1) {         
+                if ($count == 1) {
+                        fwrite($file, $curr_chapter);
+                        break;
+                }
+                else {
+                        exec('start ' . $saved_path);
+                        fwrite($file, $curr_chapter);
+                        break;
+                }
+        }
+        foreach ($html_check->find('span') as $span_tag) {
+                $string = 'Chapter ' . $curr_chapter . ': ';
+                if ($span_tag->innertext == $string) {
+                        $check = 1;
+                        $count += 1;
+                        break;
+                }
+        }
+        foreach ($html_check->find('a') as $a_tag) {
+                if ($a_tag->plaintext == '[Next Chapter]' && $check == 0) {
+                        $curr_path = $a_tag->href;
+                        $curr_chapter += 1;
+                        $count += 1;
+                        echo $curr_path . PHP_EOL;
+                        break;
+                }
+        }
+}
+
+// Close file
+fclose($file);
+/**   END OF TMW CODE
+ *
+ */
+
+/**
+ * IRAS Code Begins
+ */
+
+// open file and see if it exists, if it doesnt create it. If it does then
+// read current chapter from it or set it to XXXX
+$file = @fopen(IRAS, 'r');
+if ($file == NULL)
+        $file = fopen(IRAS, 'w+');
+
+if (filesize('./' . IRAS)) {
+        $curr_chapter = fgets($file);
+}
+else {
+        $curr_chapter = IRAS_CURR_CHAP;
+}
+// Close the file and open it so we can write to it
+fclose($file);
+$file = fopen(IRAS, 'w');
+
+//Store path to open browser with
+$saved_path = IRAS_PATH . $curr_chapter . '/';
+
+// Get HTML
+$html = @file_get_html($saved_path);
+
+// Check if Page Exists
+if ($html == NULL) {
+        echo "\n\n IRAS Page Doesnt Exists";
+        fclose($file);
+        return;
+}
+
+//Count to not open browser if next chapter Not out
+$check = 0;
+$count = 0;
+
+// Loops and Get the chapter number for the latest chapter
+$curr_path = $saved_path;
+while ($curr_path != NULL) {
+        $html_check = @file_get_html($curr_path);
+        if ($check == 1) {         
+                if ($count == 1) {
+                        fwrite($file, $curr_chapter);
+                        break;
+                }
+                else {
+                        exec('start ' . $saved_path);
+                        fwrite($file, $curr_chapter);
+                        break;
+                }
+        }
+        foreach ($html_check->find('span') as $span_tag) {
+                $string = 'Chapter ' . $curr_chapter . ': ';
+                if ($span_tag->innertext == $string) {
+                        $check = 1;
+                        $count += 1;
+                        break;
+                }
+        }
+        foreach ($html_check->find('a') as $a_tag) {
+                if ($a_tag->plaintext == '[Next Chapter]' && $check == 0) {
+                        $curr_path = $a_tag->href;
+                        $curr_chapter += 1;
+                        $count += 1;
+                        echo $curr_path . PHP_EOL;
+                        break;
+                }
+        }
+}
+
+// Close file
+fclose($file);
+/**   END OF IRAS CODE
+ *
+ */
