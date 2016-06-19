@@ -436,13 +436,13 @@ $curr_path = $saved_path;
 while ($curr_path != NULL) {
         $html_check = @file_get_html($curr_path);
         if ($html_check == NULL) {         
-                if ($count == 4) {
-                        fwrite($file, $curr_chapter - 4);
+                if ($count == 3) {
+                        fwrite($file, $curr_chapter - 3);
                         break;
                 }
                 else {
                         exec('start ' . $saved_path);
-                        fwrite($file, $curr_chapter - 4);
+                        fwrite($file, $curr_chapter - 3);
                         break;
                 }
         }
@@ -492,7 +492,7 @@ $html = @file_get_html($saved_path);
 // Check if Page Exists
 if ($html == NULL) {
         fwrite($file, $curr_chapter);
-        echo "\n\n TGR Page Doesnt Exists\n";
+        //echo "\n\n TGR Page Doesnt Exists\n";
         fclose($file);
 }
 else {
